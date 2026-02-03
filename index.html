@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anu — Will you be my valentine?</title>
+  <style>
+    :root{
+      --bg:#11021d;
+      --accent:#ff6b9a;
+      --soft:#ffd6e0;
+      --glass: rgba(255,255,255,0.06);
+      --card-bg: linear-gradient(135deg, rgba(255,107,154,0.08), rgba(255,200,220,0.02));
+    }
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{
+      background: radial-gradient(1200px 800px at 10% 20%, rgba(255,107,154,0.06), transparent),
+                  radial-gradient(1000px 600px at 90% 80%, rgba(255,200,220,0.03), transparent),
+                  var(--bg);
+      color: #fff;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .stage{
+      width:min(960px, 95vw);
+      padding:40px;
+      border-radius:18px;
+      backdrop-filter: blur(6px) saturate(1.1);
+      background: var(--card-bg);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      position:relative;
+      text-align:center;
+    }
+
+    h1{
+      font-size:2.4rem;
+      margin:0 0 8px;
+      letter-spacing:0.4px;
+    }
+    .subtitle{
+      color:var(--soft);
+      margin-bottom:18px;
+      font-size:1rem;
+    }
+    .names{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:16px;
+    }
+    .chip{
+      padding:8px 14px;
+      background:var(--glass);
+      border-radius:999px;
+      color:var(--soft);
+      font-weight:600;
+      font-size:0.95rem;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .wedding{
+      margin-bottom:22px;
+      font-size:1rem;
+      color:#ffeef6;
+      opacity:0.95;
+    }
+
+    .question{
+      font-size:1.6rem;
+      margin: 10px 0 22px;
+      color:#fff;
+    }
+
+    .btn-wrap{
+      position:relative;
+      height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn{
+      background: linear-gradient(180deg, #ff6b9a, #ff3b78);
+      border:none;
+      color:white;
+      padding:16px 28px;
+      font-size:1.05rem;
+      border-radius:999px;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(255,59,120,0.18);
+      position:absolute;
+      transition: transform 180ms ease, box-shadow 120ms ease;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+    .btn:active{ transform: scale(0.98); box-shadow: 0 4px 12px rgba(0,0,0,0.35); }
+
+    .hint{
+      margin-top:12px;
+      color: #ffd6e6;
+      font-size:0.92rem;
+      opacity:0.95;
+    }
+
+    /* heart animation background */
+    .hearts{
+      pointer-events:none;
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+    }
+    .heart{
+      position:absolute;
+      width:22px;height:22px;
+      transform-origin:center;
+      opacity:0.9;
+      animation: floatUp linear infinite;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
+    }
+    @keyframes floatUp{
+      from { transform: translateY(20vh) scale(0.7) rotate(0deg); opacity:0}
+      15% { opacity:0.9 }
+      to { transform: translateY(-120vh) scale(1.1) rotate(360deg); opacity:0; }
+    }
+
+    /* confetti burst placeholder */
+    .confetti {
+      position:absolute; inset:0; pointer-events:none;
+    }
+
+    /* overlay prompt when autoplay blocked */
+    .prompt{
+      position:absolute;
+      left:12px; top:12px;
+      background: rgba(0,0,0,0.32);
+      color:#fff;
+      padding:10px 12px;border-radius:12px;
+      font-size:0.95rem; display:flex; gap:8px; align-items:center;
+      backdrop-filter: blur(4px);
+    }
+
+    footer.credit{
+      margin-top:20px;color:#ffdfe9;font-size:0.82rem;opacity:0.95;
+    }
+
+    /* subtle pulsate for center area */
+    .pulse{
+      width:180px;height:180px;border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,107,154,0.12), transparent 35%),
+                  radial-gradient(circle at 70% 70%, rgba(255,200,220,0.06), transparent 40%);
+      position:absolute; left:50%; top:10%; transform:translateX(-50%); z-index:0;
+      filter: blur(40px);
+      pointer-events:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage" role="main" aria-labelledby="title">
+    <div class="pulse" aria-hidden="true"></div>
+
+    <div style="position:relative; z-index:2;">
+      <h1 id="title">For Anu — with all my heart</h1>
+      <div class="subtitle">A little surprise from Aji</div>
+
+      <div class="names" aria-hidden="true">
+        <div class="chip">Anu 💕</div>
+        <div class="chip">Aji 🤍</div>
+      </div>
+
+      <div class="wedding">Our wedding day: 23rd Aug 2026</div>
+
+      <div class="question">Will you be my valentine?</div>
+
+      <div class="btn-wrap" id="btnWrap" aria-hidden="false">
+        <button id="okBtn" class="btn" aria-label="Answer yes — catch the button!">OK</button>
+      </div>
+
+      <div class="hint">Try to click the button — it's being cheeky 😉</div>
+
+      <footer class="credit">Made with love — Aji</footer>
+    </div>
+
+    <div class="hearts" id="hearts" aria-hidden="true"></div>
+    <canvas class="confetti" id="confettiCanvas" aria-hidden="true"></canvas>
+
+    <div id="prompt" class="prompt" style="display:none">Tap anywhere to begin the music ▶️</div>
+  </div>
+
+  <!-- YouTube IFrame API for "Perfect" (plays on click, after user gesture) -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+  // ---- Configuration ----
+  const YT_VIDEO_ID = '2Vv-BfVoq4g'; // Ed Sheeran — Perfect (official audio/video)
+  // -----------------------
+
+  // Elements
+  const okBtn = document.getElementById('okBtn');
+  const btnWrap = document.getElementById('btnWrap');
+  const stage = document.getElementById('stage');
+  const prompt = document.getElementById('prompt');
+  const heartsContainer = document.getElementById('hearts');
+  const confettiCanvas = document.getElementById('confettiCanvas');
+
+  // Layout / bounds helper
+  function getBounds() {
+    const r = btnWrap.getBoundingClientRect();
+    return { left: r.left, top: r.top, width: r.width, height: r.height };
+  }
+
+  // Playful dodging behavior
+  function moveButtonRandomly() {
+    const bounds = getBounds();
+    const btnRect = okBtn.getBoundingClientRect();
+    const maxX = bounds.width - btnRect.width - 8;
+    const maxY = bounds.height - btnRect.height - 8;
+
+    // pick a new random position within wrapper
+    const x = Math.max(0, Math.min(maxX, Math.random() * (bounds.width)));
+    const y = Math.max(0, Math.min(maxY, Math.random() * (bounds.height)));
+
+    okBtn.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  // Make it playful: on mouseenter move away a bit
+  okBtn.addEventListener('mouseenter', (e) => {
+    // small chance to allow user to catch it (so it's possible)
+    const allowCatch = Math.random() < 0.1;
+    if (!allowCatch) {
+      moveButtonRandomly();
+    } else {
+      // slight jitter so it looks like it almost escaped
+      okBtn.style.transform += ' translate(6px, -4px)';
+    }
+  });
+
+  // Also nudge on touchstart for mobile
+  okBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveButtonRandomly();
+  }, {passive:false});
+
+  // --- WebAudio soothing tone (ambient pad) ---
+  let audioCtx, masterGain, oscA, oscB, lfo, filter;
+  let ambientPlaying = false;
+
+  function createAmbient() {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (err) {
+      console.warn('WebAudio not supported');
+      return;
+    }
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.0001; // start nearly silent, fade in
+    masterGain.connect(audioCtx.destination);
+
+    // gentle lowpass filter to keep tone warm
+    filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 900;
+    filter.Q.value = 0.6;
+    filter.connect(masterGain);
+
+    // two detuned oscillators for a pad
+    oscA = audioCtx.createOscillator();
+    oscA.type = 'sine';
+    oscA.frequency.value = 220; // A3-ish
+    const oscAGain = audioCtx.createGain(); oscAGain.gain.value = 0.5;
+    oscA.connect(oscAGain).connect(filter);
+
+    oscB = audioCtx.createOscillator();
+    oscB.type = 'sine';
+    oscB.frequency.value = 220 * Math.pow(2, 4/120); // slight detune ~ +33 cents
+    const oscBGain = audioCtx.createGain(); oscBGain.gain.value = 0.45;
+    oscB.connect(oscBGain).connect(filter);
+
+    // slow LFO for gentle wobble on filter freq
+    lfo = audioCtx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.07;
+    const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 200;
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+
+    // start components (may be blocked until user gesture)
+    const now = audioCtx.currentTime;
+    oscA.start(now);
+    oscB.start(now);
+    lfo.start(now);
+
+    // ramp master gain up to a soothing level
+    masterGain.gain.cancelScheduledValues(now);
+    masterGain.gain.setValueAtTime(0.0001, now);
+    masterGain.gain.exponentialRampToValueAtTime(0.09, now + 3.5);
+
+    ambientPlaying = true;
+  }
+
+  function fadeOutAmbient(duration = 1.2) {
+    if (!audioCtx || !masterGain) return;
+    const now = audioCtx.currentTime;
+    try {
+      masterGain.gain.cancelScheduledValues(now);
+      masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+      masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      // stop oscillators after fade
+      setTimeout(() => {
+        try { oscA.stop(); oscB.stop(); lfo.stop(); } catch(e){}
+        ambientPlaying = false;
+      }, (duration+0.1)*1000);
+    } catch(e){ console.warn(e) }
+  }
+
+  // Autoplay attempt on load
+  window.addEventListener('load', async () => {
+    createAmbient();
+    // Try to resume context (most browsers require a gesture)
+    if (audioCtx && audioCtx.state === 'suspended') {
+      // try resume; may remain suspended
+      try {
+        await audioCtx.resume();
+        // If still suspended, show overlay
+        if (audioCtx.state === 'suspended') {
+          prompt.style.display = 'flex';
+        } else {
+          prompt.style.display = 'none';
+        }
+      } catch (e) {
+        prompt.style.display = 'flex';
+      }
+    } else {
+      prompt.style.display = 'none';
+    }
+  });
+
+  // If autoplay was blocked, let a single tap resume all audio & hide prompt
+  function ensureAudioStarted() {
+    if (!audioCtx) { createAmbient(); return; }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(()=> {
+        prompt.style.display = 'none';
+      }).catch(()=> {
+        prompt.style.display = 'flex';
+      });
+    } else {
+      prompt.style.display = 'none';
+    }
+  }
+
+  // Global single-tap handler to help start ambient if blocked
+  document.addEventListener('click', (e) => {
+    ensureAudioStarted();
+  }, {once:false});
+
+  // --- YouTube player setup ---
+  let ytPlayer;
+  function onYouTubeIframeAPIReady() {
+    // create a hidden player; we'll call playVideo() when OK clicked
+    ytPlayer = new YT.Player('ytPlayerContainer', {
+      height: '0', width: '0', // hidden visually
+      videoId: YT_VIDEO_ID,
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        playsinline: 1,
+        rel: 0,
+        modestbranding: 1
+      },
+      events: {
+        onReady: (ev) => { /* ready */ },
+        onStateChange: (ev) => {
+          // placeholder
+        }
+      }
+    });
+  }
+
+  // create a hidden container for YT player
+  const ytCont = document.createElement('div');
+  ytCont.id = 'ytPlayerContainer';
+  ytCont.style.position = 'absolute';
+  ytCont.style.left = '-9999px';
+  ytCont.style.width = '1px';
+  ytCont.style.height = '1px';
+  document.body.appendChild(ytCont);
+
+  // When OK is clicked (catch the button), fade ambient and play Perfect
+  okBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    // Make sure audio is started (counts as user gesture)
+    if (audioCtx && audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
+    // Fade out ambient
+    fadeOutAmbient(1.0);
+
+    // Small celebrate animation
+    burstHearts(24);
+    startConfetti();
+
+    // Play YouTube "Perfect"
+    if (typeof YT !== 'undefined' && YT && ytPlayer) {
+      try {
+        // start playing, set visible size for audio focus (small)
+        ytPlayer.setVolume(90);
+        ytPlayer.playVideo();
+      } catch (err) {
+        console.warn('YT play failed', err);
+      }
+    } else {
+      // fallback: open youtube in a small popup (best-effort)
+      window.open('https://www.youtube.com/watch?v=' + YT_VIDEO_ID, '_blank');
+    }
+
+    // Make a sweet message appear
+    showAnswerMessage();
+  });
+
+  // After a few seconds, make the button settle somewhere so it's eventually catchable
+  setTimeout(() => {
+    okBtn.style.transition = 'transform 260ms cubic-bezier(.2,.9,.2,1)';
+  }, 450);
+
+  // ---- Hearts & confetti ----
+  function createHeartSVG(color='#ff6b9a') {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width','22'); svg.setAttribute('height','22'); svg.setAttribute('viewBox','0 0 24 24');
+    svg.innerHTML = '<path fill="'+color+'" d="M12 21s-7.33-4.75-9.17-7.03C.9 11.9 2.02 7.5 5.5 6.2 7.1 5.6 8.9 6 10 7.2 11.1 6 12.9 5.6 14.5 6.2c3.48 1.3 4.6 5.7 2.67 7.77C19.33 16.25 12 21 12 21z"/>';
+    return svg;
+  }
+
+  function burstHearts(count=12) {
+    const w = stage.clientWidth;
+    for (let i=0;i<count;i++){
+      const el = createHeartSVG(['#ff6b9a','#ff3b78','#ffd6e0'][Math.floor(Math.random()*3)]);
+      el.classList.add('heart');
+      const left = Math.random()*100;
+      el.style.left = left + '%';
+      el.style.bottom = (Math.random()*20 - 10) + 'vh';
+      el.style.transform = `translateY(${Math.random()*10}px) scale(${0.7 + Math.random()*0.7}) rotate(${Math.random()*90}deg)`;
+      el.style.animationDuration = (6 + Math.random()*6) + 's';
+      heartsContainer.appendChild(el);
+      // remove after animation
+      setTimeout(()=> el.remove(), 9000);
+    }
+  }
+
+  // Simple confetti implementation (canvas)
+  function startConfetti() {
+    const canvas = confettiCanvas;
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    const pieces = [];
+    const colors = ['#ff6b9a','#ffd6e0','#ffb3c7','#ffffff'];
+
+    function resetPiece(p){
+      p.x = Math.random()*W;
+      p.y = -20 - Math.random()*H*0.2;
+      p.size = 6 + Math.random()*8;
+      p.color = colors[Math.floor(Math.random()*colors.length)];
+      p.speed = 1 + Math.random()*3;
+      p.rot = Math.random()*360;
+      p.velX = (Math.random()-0.5)*2;
+      p.velY = p.speed;
+    }
+    for (let i=0;i<120;i++){
+      const p = {};
+      resetPiece(p);
+      pieces.push(p);
+    }
+
+    let running = true;
+    function frame(){
+      ctx.clearRect(0,0,W,H);
+      for (let p of pieces){
+        p.x += p.velX;
+        p.y += p.velY;
+        p.rot += 6;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot * Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+        ctx.restore();
+        if (p.y > H + 50) resetPiece(p);
+      }
+      if (running) requestAnimationFrame(frame);
+    }
+    frame();
+    // stop after a while
+    setTimeout(()=>{ running=false; ctx.clearRect(0,0,W,H); }, 8000);
+    window.addEventListener('resize', ()=>{ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+  }
+
+  // show answer text after click
+  function showAnswerMessage() {
+    const msg = document.createElement('div');
+    msg.style.position = 'absolute';
+    msg.style.zIndex = 10;
+    msg.style.left = '50%';
+    msg.style.top = '50%';
+    msg.style.transform = 'translate(-50%,-50%)';
+    msg.style.padding = '26px 28px';
+    msg.style.borderRadius = '14px';
+    msg.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))';
+    msg.style.backdropFilter = 'blur(6px)';
+    msg.style.color = '#fff';
+    msg.style.textAlign = 'center';
+    msg.style.boxShadow = '0 8px 30px rgba(0,0,0,0.6)';
+    msg.innerHTML = `<div style="font-size:1.25rem;font-weight:700;margin-bottom:6px">Yes! 💍</div>
+                     <div style="font-size:0.98rem;color:#ffdfe8">Anu — will you marry me? (23 Aug 2026)</div>
+                     <div style="margin-top:10px;font-size:0.85rem;color:#ffdfe8">Playing "Perfect" now...</div>`;
+    document.body.appendChild(msg);
+    setTimeout(()=> { msg.style.transition='opacity 700ms'; msg.style.opacity='0'; setTimeout(()=>msg.remove(),700); }, 7000);
+  }
+
+  // Make confetti hearts periodically to make it lively
+  setInterval(()=> burstHearts(6), 3500);
+
+  // Resize listener to keep button in visible range
+  window.addEventListener('resize', () => {
+    okBtn.style.transform = 'translate(0,0)';
+  });
+
+  // Accessibility: allow keyboard enter/space to "catch" it
+  okBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      okBtn.click();
+    }
+  });
+
+  // Expose YT API callback in global (YouTube requires it)
+  window.onYouTubeIframeAPIReady = function() {
+    if (typeof onYouTubeIframeAPIReady === 'function') {
+      // our function defined earlier will be used (YT will call window.onYouTubeIframeAPIReady)
+    }
+    // initialize player
+    onYouTubeIframeAPIReadyActual();
+  };
+
+  function onYouTubeIframeAPIReadyActual() {
+    // create the player (hidden), ready for playback when user clicks
+    ytPlayer = new YT.Player('ytPlayerContainer', {
+      height: '1', width: '1',
+      videoId: YT_VIDEO_ID,
+      playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onReady: (e) => { /* ready */ },
+        onStateChange: (e) => { /* optional */ }
+      }
+    });
+  }
+
+  // Helper: if user gesture hasn't happened, show prompt
+  setTimeout(()=> {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      prompt.style.display = 'flex';
+      // one-time click anywhere will hide
+      const onStart = () => {
+        ensureAudioStarted();
+        prompt.style.display = 'none';
+        document.removeEventListener('click', onStart);
+      };
+      document.addEventListener('click', onStart, {once:true});
+    }
+  }, 1100);
+
+  // small safety: if youtube API not loaded (rare), create simple link for user
+  setTimeout(()=> {
+    if (typeof YT === 'undefined') {
+      // create visible link so clicking OK opens video
+      const info = document.createElement('div');
+      info.style.fontSize='0.82rem'; info.style.color='#ffdfe8';
+      info.style.marginTop='10px';
+      info.innerHTML = 'If the music doesn\'t start automatically, <a href="https://www.youtube.com/watch?v='+YT_VIDEO_ID+'" target="_blank" style="color:#fff;text-decoration:underline">click here to play Perfect</a>.';
+      stage.appendChild(info);
+    }
+  }, 2000);
+
+  </script>
+</body>
+</html>
