@@ -14,7 +14,7 @@
       --card: rgba(255,255,255,0.03);
     }
     html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#fff;background:linear-gradient(180deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased}
-    /* Top floating answer panel */
+    /* Top fixed panel */
     .top-panel{
       position:fixed; left:50%; transform:translateX(-50%); top:18px;
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -23,12 +23,13 @@
       backdrop-filter: blur(6px);
       pointer-events:auto;
       transition: transform 220ms ease;
-      overflow:hidden; /* used so No button can be partly moved out */
+      overflow:visible;
     }
     .top-panel .label{font-weight:700;margin-right:8px;color:#fff}
     .panel-btn{padding:10px 14px;border-radius:999px;border:none;font-weight:800;cursor:pointer;font-size:0.95rem}
     .panel-btn.yes{background:linear-gradient(180deg,var(--accent),#ff3b78);color:#fff}
     .panel-btn.no{background:linear-gradient(180deg,#ffdee6,#ffd0df);color:#6b0020}
+    .no-placeholder{display:inline-block;width:72px;height:36px;border-radius:999px}
     /* main container */
     .container{max-width:1100px;margin:84px auto 28px;padding:26px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 12px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden}
     header{display:flex;align-items:center;justify-content:space-between;gap:18px}
@@ -57,14 +58,12 @@
     canvas.confetti{position:absolute;inset:0;pointer-events:none;border-radius:16px}
     footer{margin-top:20px;text-align:center;color:rgba(255,255,255,0.85);font-size:0.92rem}
     img.responsive{width:100%;height:100%;object-fit:cover;display:block}
-    /* subtle animation for No button movement hint */
-    .no-hint { transition: transform 260ms cubic-bezier(.2,.9,.2,1); }
   </style>
 </head>
 <body>
   <div class="prompt" id="prompt">Tap anywhere to start the soothing music ▶️</div>
 
-  <!-- Top fixed panel with Yes / No inline (stays at top, as requested) -->
+  <!-- Top fixed panel -->
   <div class="top-panel" id="topPanel" role="region" aria-label="Answer panel">
     <div class="label">Anu — Will you be my valentine?</div>
     <button id="panelYes" class="panel-btn yes" aria-label="Yes — accept">Yes</button>
@@ -97,7 +96,7 @@
           <a class="btn" href="#story" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff">Read Our Story</a>
         </div>
 
-        <p style="margin-top:14px;color:var(--muted)">Use the top panel to answer. No is shy — it slides out of immediate clickable range 😉</p>
+        <p style="margin-top:14px;color:var(--muted)">Use the top panel to answer. No will roam across the whole page when you try to catch it 😉</p>
       </div>
 
       <aside class="hero-right card" aria-labelledby="cta-title">
@@ -105,16 +104,16 @@
         <div style="margin-top:8px;color:var(--muted)">Anu & Aji — 23rd Aug 2026</div>
 
         <div style="margin:12px 0;border-radius:10px;overflow:hidden;height:150px">
-          <!-- hero image: uses base64 SVG placeholder by default; will attempt to replace with resources/hero.jpg if available -->
-          <img id="heroImg" class="responsive" alt="Hero photo placeholder" data-resource="resources/hero.jpg">
+          <!-- hero image: your Image 3 should be saved as resources/hero.jpg -->
+          <img id="heroImg" class="responsive" alt="Hero photo" data-resource="resources/hero.jpg">
         </div>
 
         <div class="cta-row" role="group" aria-label="Choose">
           <button id="yesBtn" class="btn yes" aria-label="Yes — of course">Yes — of course</button>
-          <button id="noBtn" class="btn no no-hint" aria-label="No — shy" aria-disabled="true" tabindex="-1">No</button>
+          <button id="noBtn" class="btn no" aria-label="No — shy" aria-disabled="true" tabindex="-1">No</button>
         </div>
 
-        <div style="margin-top:10px;font-size:0.92rem;color:var(--muted)">The No button is shy — it likes a little space 😄</div>
+        <div style="margin-top:10px;font-size:0.92rem;color:var(--muted)">The No button will roam the page — it loves exploring 😄</div>
       </aside>
     </section>
 
@@ -122,19 +121,19 @@
       <section id="story" class="section" aria-labelledby="story-h">
         <h3 id="story-h" style="margin-top:0;font-family:'Playfair Display',serif">Our Story</h3>
         <p style="color:var(--muted)">From little smiles to unforgettable moments — this page is a small celebration of us. I wrote this for you, Anu, to tell you how much I love you and how excited I am for our future.</p>
-        <p style="color:var(--muted)">Everything here is editable later — gallery photos in resources/ (the page will try to load them if you drop images there).</p>
+        <p style="color:var(--muted)">Drop your photos into resources/ with the filenames listed in the instructions so the page shows them directly.</p>
       </section>
 
       <section id="moments" class="section" aria-labelledby="moments-h">
         <h3 id="moments-h" style="margin-top:0;font-family:'Playfair Display',serif">Moments</h3>
         <div class="gallery" aria-hidden="false">
-          <!-- photos use base64 SVG placeholders initially; will attempt to load resources/photo1.jpg ... photo6.jpg -->
+          <!-- save Image 1 -> resources/photo1.jpg, Image 2 -> resources/photo2.jpg, Image 4 -> resources/photo3.jpg -->
           <div class="photo"><img class="responsive" alt="moment 1" data-resource="resources/photo1.jpg"></div>
           <div class="photo"><img class="responsive" alt="moment 2" data-resource="resources/photo2.jpg"></div>
           <div class="photo"><img class="responsive" alt="moment 3" data-resource="resources/photo3.jpg"></div>
-          <div class="photo"><img class="responsive" alt="moment 4" data-resource="resources/photo4.jpg"></div>
-          <div class="photo"><img class="responsive" alt="moment 5" data-resource="resources/photo5.jpg"></div>
-          <div class="photo"><img class="responsive" alt="moment 6" data-resource="resources/photo6.jpg"></div>
+          <div class="photo"><img class="responsive" alt="moment 4"></div>
+          <div class="photo"><img class="responsive" alt="moment 5"></div>
+          <div class="photo"><img class="responsive" alt="moment 6"></div>
         </div>
       </section>
     </div>
@@ -169,75 +168,61 @@
     <canvas class="confetti" id="confettiCanvas" aria-hidden="true"></canvas>
   </main>
 
-  <!-- YouTube IFrame API (we will set start=20 when creating player) -->
+  <!-- YouTube IFrame API (start at 20s) -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-  // -----------------------------
-  // Config
-  // -----------------------------
-  const YT_VIDEO_ID = '2Vv-BfVoq4g'; // Perfect by Ed Sheeran
-  const START_AT = 20; // start playback at 20 seconds
-  // -----------------------------
+  // Configuration
+  const YT_VIDEO_ID = '2Vv-BfVoq4g';
+  const START_AT = 20;
 
-  // Utility: build a simple SVG placeholder and return base64 data-uri
+  // SVG placeholder generator (base64 data URIs)
   function svgPlaceholder(text, w = 600, h = 350, bg = '#2b0f2f', fg = '#ffdfe8') {
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>
       <rect width='100%' height='100%' fill='${bg}' rx='12' />
       <g fill='${fg}' font-family='Inter, Arial, sans-serif' font-weight='700' text-anchor='middle'>
         <text x='50%' y='48%' font-size='22'>${text}</text>
       </g>
-      <g opacity='0.12'>
-        <circle cx='80' cy='60' r='40' fill='#ff6b9a'/>
-        <circle cx='520' cy='280' r='60' fill='#ff3b78'/>
-      </g>
     </svg>`;
-    // base64-encode safely
     try {
       return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
     } catch (e) {
-      // fallback without encode
       return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }
   }
 
-  // Set initial placeholders (base64-encoded SVGs) and try to replace with resources/* if available
+  // Initialize images: set base64 placeholder then try to load resources/* images
   function initPlaceholders() {
     const imgs = document.querySelectorAll('img[data-resource]');
     imgs.forEach((img, idx) => {
-      // choose label based on id or index
       const label = img.id === 'heroImg' ? 'HERO PHOTO' : `PHOTO ${idx + 1}`;
       const w = img.id === 'heroImg' ? 600 : 400;
       const h = img.id === 'heroImg' ? 350 : 250;
       img.src = svgPlaceholder(label, w, h);
-      // attempt to load the resource path specified in data-resource
       const resource = img.getAttribute('data-resource');
       if (!resource) return;
       const test = new Image();
-      test.onload = () => { img.src = resource; }; // replace if resource exists and loads
+      test.onload = () => { img.src = resource; };
       test.onerror = () => { /* keep placeholder */ };
-      // try loading resource
-      test.src = resource + '?_=' + (new Date().getTime()); // cache-bust to improve testing during development
+      test.src = resource + '?_=' + (new Date().getTime());
     });
   }
 
   initPlaceholders();
 
-  // -----------------------------
-  // UI elements
-  // -----------------------------
-  const yesBtn = document.getElementById('yesBtn');
+  // Elements
+  const panelNo = document.getElementById('panelNo');
   const noBtn = document.getElementById('noBtn');
   const panelYes = document.getElementById('panelYes');
-  const panelNo = document.getElementById('panelNo');
+  const yesBtn = document.getElementById('yesBtn');
   const prompt = document.getElementById('prompt');
-  const heartsContainer = document.getElementById('hearts');
+  const hearts = document.getElementById('hearts');
   const confettiCanvas = document.getElementById('confettiCanvas');
   const saveNote = document.getElementById('saveNote');
   const noteText = document.getElementById('noteText');
   const notesList = document.getElementById('notesList');
 
-  // Notes (local demo)
+  // Local notes demo
   const notes = [];
   saveNote.addEventListener('click', () => {
     const v = noteText.value.trim();
@@ -252,57 +237,123 @@
   }
   function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  // -----------------------------
-  // "No" behavior (top panel + main panel)
-  // - Not clickable (aria-disabled, tabindex=-1)
-  // - When hovered or approached, it moves a bit OUT of the immediate clickable area (partially translated)
-  // -----------------------------
-  function nudgeNo(btn, container) {
-    // move the No button slightly outwards (to the right and up) so it becomes harder to click
-    // because .top-panel has overflow:hidden, part of the button will be clipped visually if moved beyond bounds
-    const rect = container.getBoundingClientRect();
-    const btnRect = btn.getBoundingClientRect();
-    // compute a movement distance proportional to panel width
-    const moveX = Math.min(80, Math.max(36, rect.width * 0.08)); // px
-    const moveY = -6 - Math.random() * 6;
-    btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
-    // small announcement for screen readers
-    btn.setAttribute('aria-hidden', 'true');
+  // ---------------------------
+  // Make No buttons roam the whole viewport (both top-panel No and main No)
+  // ---------------------------
+  function makeRoamer(button) {
+    const state = { roaming:false, placeholder:null, boundMove:null, periodicId:null };
+
+    function randPos(btnRect) {
+      const margin = 12;
+      const vw = Math.max(window.innerWidth, 320);
+      const vh = Math.max(window.innerHeight, 320);
+      const maxX = Math.max(margin, vw - btnRect.width - margin);
+      const maxY = Math.max(margin, vh - btnRect.height - margin);
+      const x = Math.floor(margin + Math.random() * maxX);
+      const y = Math.floor(margin + Math.random() * maxY);
+      return {x, y};
+    }
+
+    function start() {
+      if (state.roaming) return;
+      const rect = button.getBoundingClientRect();
+      // placeholder to keep layout (so top panel doesn't collapse)
+      const ph = document.createElement('span');
+      ph.className = 'no-placeholder';
+      ph.style.width = rect.width + 'px';
+      ph.style.height = rect.height + 'px';
+      if (button.parentElement) button.parentElement.insertBefore(ph, button);
+      state.placeholder = ph;
+
+      // move button to body so it can roam freely
+      document.body.appendChild(button);
+      button.style.position = 'fixed';
+      button.style.left = rect.left + 'px';
+      button.style.top = rect.top + 'px';
+      button.style.transition = 'left 350ms ease, top 350ms ease, transform 300ms ease';
+      button.style.zIndex = 9999;
+      state.roaming = true;
+
+      // move handler
+      state.boundMove = () => move();
+      button.addEventListener('mouseenter', state.boundMove);
+      button.addEventListener('mousemove', state.boundMove, {passive:true});
+      button.addEventListener('touchstart', (e)=>{ e.preventDefault(); move(); }, {passive:false});
+      button.addEventListener('click', preventClick, {capture:true});
+
+      state.periodicId = setInterval(()=> { if (Math.random() < 0.7) move(); }, 2000);
+    }
+
+    function stop() {
+      if (!state.roaming) return;
+      button.removeEventListener('mouseenter', state.boundMove);
+      button.removeEventListener('mousemove', state.boundMove);
+      if (state.periodicId) clearInterval(state.periodicId);
+      button.removeEventListener('click', preventClick, {capture:true});
+      // restore
+      button.style.transition = '';
+      button.style.zIndex = '';
+      button.style.position = '';
+      button.style.left = '';
+      button.style.top = '';
+      button.style.transform = '';
+      if (state.placeholder && state.placeholder.parentElement) {
+        state.placeholder.parentElement.insertBefore(button, state.placeholder);
+        state.placeholder.remove();
+        state.placeholder = null;
+      }
+      state.roaming = false;
+    }
+
+    function preventClick(e) {
+      e.preventDefault(); e.stopPropagation();
+      button.animate([{transform: 'translateX(0)'},{transform: 'translateX(-8px)'},{transform: 'translateX(8px)'},{transform: 'translateX(0)'}], {duration:360});
+      setTimeout(move, 240);
+    }
+
+    function move() {
+      if (!state.roaming) { start(); }
+      const rect = button.getBoundingClientRect();
+      const pos = randPos(rect);
+      button.style.left = pos.x + 'px';
+      button.style.top = pos.y + 'px';
+      // announce for assistive tech
+      announce('No button is shy and moved');
+    }
+
+    // trigger roaming on first interaction
+    button.addEventListener('mouseenter', () => { start(); move(); }, {once:true});
+    button.addEventListener('touchstart', (e) => { e.preventDefault(); start(); move(); }, {once:true,passive:false});
+
+    // keep not focusable
+    button.setAttribute('tabindex', '-1');
+    button.setAttribute('aria-disabled', 'true');
+
+    return { start, stop };
   }
 
-  function settleNo(btn) {
-    btn.style.transform = 'translate(0, 0)';
-    btn.setAttribute('aria-hidden', 'false');
-  }
+  const panelNoRoamer = makeRoamer(panelNo);
+  const noBtnRoamer = makeRoamer(noBtn);
 
-  // top panel No
-  const topPanel = document.getElementById('topPanel');
-  panelNo.setAttribute('tabindex', '-1');
-  panelNo.setAttribute('aria-disabled', 'true');
-  panelNo.addEventListener('mouseenter', () => nudgeNo(panelNo, topPanel));
-  panelNo.addEventListener('mousemove', () => { if (Math.random() < 0.7) nudgeNo(panelNo, topPanel); }, {passive:true});
-  panelNo.addEventListener('touchstart', (e) => { e.preventDefault(); nudgeNo(panelNo, topPanel); }, {passive:false});
-  panelNo.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); panelNo.animate([{transform: panelNo.style.transform+' translateX(0)'},{transform: panelNo.style.transform+' translateX(-8px)'},{transform: panelNo.style.transform+' translateX(8px)'},{transform: panelNo.style.transform+' translateX(0)'}], {duration:360}); setTimeout(()=>nudgeNo(panelNo, topPanel), 240); });
+  // keep roaming buttons inside viewport on resize
+  window.addEventListener('resize', () => {
+    [panelNo, noBtn].forEach(btn => {
+      if (btn.style.position === 'fixed') {
+        const rect = btn.getBoundingClientRect();
+        const margin = 8;
+        const maxX = Math.max(margin, window.innerWidth - rect.width - margin);
+        const maxY = Math.max(margin, window.innerHeight - rect.height - margin);
+        let left = parseInt(btn.style.left || rect.left, 10);
+        let top = parseInt(btn.style.top || rect.top, 10);
+        left = Math.min(left, maxX); top = Math.min(top, maxY);
+        btn.style.left = left + 'px'; btn.style.top = top + 'px';
+      }
+    });
+  });
 
-  // main No
-  const cardContainer = document.querySelector('.hero-right');
-  noBtn.setAttribute('tabindex', '-1');
-  noBtn.setAttribute('aria-disabled', 'true');
-  noBtn.addEventListener('mouseenter', () => nudgeNo(noBtn, cardContainer));
-  noBtn.addEventListener('mousemove', () => { if (Math.random() < 0.6) nudgeNo(noBtn, cardContainer); }, {passive:true});
-  noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); nudgeNo(noBtn, cardContainer); }, {passive:false});
-  noBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); noBtn.animate([{transform: noBtn.style.transform+' translateX(0)'},{transform: noBtn.style.transform+' translateX(-10px)'},{transform: noBtn.style.transform+' translateX(10px)'},{transform: noBtn.style.transform+' translateX(0)'}], {duration:420}); setTimeout(()=>nudgeNo(noBtn, cardContainer), 260); });
-
-  // periodic little movement so it stays lively
-  setInterval(() => { if (Math.random() < 0.6) { nudgeNo(panelNo, topPanel); nudgeNo(noBtn, cardContainer); setTimeout(() => { settleNo(panelNo); settleNo(noBtn); }, 1800); } }, 3000);
-
-  // Ensure No buttons are not focusable for keyboard users
-  panelNo.addEventListener('keydown', (e) => { e.preventDefault(); nudgeNo(panelNo, topPanel); });
-  noBtn.addEventListener('keydown', (e) => { e.preventDefault(); nudgeNo(noBtn, cardContainer); });
-
-  // -----------------------------
-  // Ambient pad via WebAudio
-  // -----------------------------
+  // ---------------------------
+  // WebAudio ambient pad
+  // ---------------------------
   let audioCtx, masterGain, oscA, oscB, lfo, filter;
   function createAmbient(){
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { console.warn('WebAudio not supported'); return; }
@@ -337,6 +388,8 @@
     if (audioCtx && audioCtx.state === 'suspended') {
       try { await audioCtx.resume(); prompt.style.display='none'; } catch(e) { prompt.style.display='flex'; }
     } else prompt.style.display='none';
+    // try to load resources images shortly after load
+    setTimeout(tryReplaceResources, 600);
   });
 
   function ensureAudioStarted(){
@@ -348,9 +401,9 @@
   document.addEventListener('click', ()=>ensureAudioStarted(), {once:false});
   setTimeout(()=>{ if (audioCtx && audioCtx.state === 'suspended') { prompt.style.display='flex'; const onStart=()=>{ ensureAudioStarted(); prompt.style.display='none'; document.removeEventListener('click', onStart); }; document.addEventListener('click', onStart, {once:true}); } }, 1200);
 
-  // -----------------------------
-  // YouTube player for "Perfect" (start at 20s)
-  // -----------------------------
+  // ---------------------------
+  // YouTube player: start at 20s
+  // ---------------------------
   const ytContainer = document.createElement('div');
   ytContainer.id = 'ytPlayer';
   ytContainer.style.position = 'absolute';
@@ -362,56 +415,33 @@
     ytPlayer = new YT.Player('ytPlayer', {
       height: '1', width: '1',
       videoId: YT_VIDEO_ID,
-      playerVars: {
-        autoplay: 0,
-        controls: 0,
-        rel: 0,
-        modestbranding: 1,
-        playsinline: 1,
-        start: START_AT  // ensure playback begins at 20s
-      },
-      events: {
-        onReady: function() { /* ready */ },
-        onStateChange: function() { /* optional */ }
-      }
+      playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, playsinline: 1, start: START_AT },
+      events: { onReady: ()=>{}, onStateChange: ()=>{} }
     });
   };
 
-  // -----------------------------
-  // Yes button actions (both top panel and main)
-  // - fade ambient, play Perfect at 20s, show celebration
-  // -----------------------------
+  // ---------------------------
+  // Yes click handler
+  // ---------------------------
   async function handleYesClick(e) {
     e && e.preventDefault && e.preventDefault();
     if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
     fadeOutAmbient(1.0);
-    burstHearts(30);
-    startConfetti();
+    burstHearts(30); startConfetti();
 
-    // attempt to play YouTube at START_AT seconds
     if (typeof YT !== 'undefined' && ytPlayer) {
-      try {
-        // make sure it's at START_AT
-        try { ytPlayer.seekTo(START_AT, true); } catch (seekErr) { /* ignore */ }
-        ytPlayer.setVolume(90);
-        ytPlayer.playVideo();
-      } catch (err) {
-        console.warn('YT play failed', err);
-        window.open('https://www.youtube.com/watch?v=' + YT_VIDEO_ID + '&t=' + START_AT, '_blank');
-      }
-    } else {
-      // fallback: open YouTube at the timestamp
-      window.open('https://www.youtube.com/watch?v=' + YT_VIDEO_ID + '&t=' + START_AT, '_blank');
-    }
+      try { ytPlayer.seekTo(START_AT, true); ytPlayer.setVolume(90); ytPlayer.playVideo(); }
+      catch (err) { window.open('https://www.youtube.com/watch?v=' + YT_VIDEO_ID + '&t=' + START_AT, '_blank'); }
+    } else { window.open('https://www.youtube.com/watch?v=' + YT_VIDEO_ID + '&t=' + START_AT, '_blank'); }
 
     showCongratsCard();
+    // stop roamers so No returns
+    try { panelNoRoamer.stop && panelNoRoamer.stop(); noBtnRoamer.stop && noBtnRoamer.stop(); } catch(e){}
   }
-
   yesBtn.addEventListener('click', handleYesClick);
   panelYes.addEventListener('click', handleYesClick);
-  // keyboard support
-  yesBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleYesClick(); } });
-  panelYes.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleYesClick(); } });
+  yesBtn.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); handleYesClick(); } });
+  panelYes.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); handleYesClick(); } });
 
   function showCongratsCard(){
     const o = document.createElement('div');
@@ -426,16 +456,15 @@
     setTimeout(()=>{ o.style.transition='opacity 600ms'; o.style.opacity='0'; setTimeout(()=>o.remove(),650); },7000);
   }
 
-  // -----------------------------
+  // ---------------------------
   // Visuals: hearts & confetti
-  // -----------------------------
+  // ---------------------------
   function createHeartSVG(color='#ff6b9a'){
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('width','18'); svg.setAttribute('height','18'); svg.setAttribute('viewBox','0 0 24 24');
     svg.innerHTML = `<path fill="${color}" d="M12 21s-7.33-4.75-9.17-7.03C.9 11.9 2.02 7.5 5.5 6.2 7.1 5.6 8.9 6 10 7.2 11.1 6 12.9 5.6 14.5 6.2c3.48 1.3 4.6 5.7 2.67 7.77C19.33 16.25 12 21 12 21z"/>`;
     return svg;
   }
-
   function burstHearts(count=12){
     for (let i=0;i<count;i++){
       const el = createHeartSVG(['#ff6b9a','#ff3b78','#ffd6e0'][Math.floor(Math.random()*3)]);
@@ -444,7 +473,7 @@
       el.style.left = left + '%';
       el.style.bottom = (Math.random()*20 - 10) + 'vh';
       el.style.animationDuration = (5 + Math.random()*6) + 's';
-      heartsContainer.appendChild(el);
+      hearts.appendChild(el);
       setTimeout(()=> el.remove(), 9000);
     }
   }
@@ -480,9 +509,9 @@
     window.addEventListener('resize', ()=>{ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
   }
 
-  // -----------------------------
-  // Replace placeholders with resources/* if available (attempt)
-  // -----------------------------
+  // ---------------------------
+  // Try replacing placeholders with resources/* images (if you saved them)
+  // ---------------------------
   function tryReplaceResources() {
     const imgs = document.querySelectorAll('img[data-resource]');
     imgs.forEach(img => {
@@ -490,16 +519,12 @@
       if (!resource) return;
       const tester = new Image();
       tester.onload = () => { img.src = resource; };
-      tester.onerror = () => { /* keep base64 placeholder */ };
+      tester.onerror = () => { /* keep base placeholder */ };
       tester.src = resource + '?_=' + (new Date().getTime());
     });
   }
-  // run shortly after load to give local resources a chance
-  window.addEventListener('load', () => { setTimeout(tryReplaceResources, 600); });
 
-  // -----------------------------
-  // Fallback if YouTube API not ready
-  // -----------------------------
+  // Fallback if YT API not loaded
   setTimeout(()=> {
     if (typeof YT === 'undefined') {
       const info = document.createElement('div');
@@ -509,31 +534,11 @@
     }
   }, 2000);
 
-  // -----------------------------
-  // Initialize base64 SVG placeholders (must run after functions defined)
-  // -----------------------------
-  initPlaceholders();
-
-  // Accessibility: small ARIA live region to announce No button playfulness
-  const live = document.createElement('div');
-  live.setAttribute('aria-live','polite');
-  live.style.position='absolute'; live.style.left='-9999px';
-  document.body.appendChild(live);
+  // ARIA live announcements for No roaming
+  const live = document.createElement('div'); live.setAttribute('aria-live','polite'); live.style.position='absolute'; live.style.left='-9999px'; document.body.appendChild(live);
   function announce(msg){ live.textContent = msg; }
-
-  // Make nudge functions also announce
-  const _nudgeNo = nudgeNo;
-  nudgeNo = function(btn, container) { _nudgeNo(btn, container); announce('No button is shy'); };
-
-  // Announce when Yes is clicked (for screen readers)
-  function announceYes() { announce('She said yes! Congratulations.'); }
-  panelYes.addEventListener('click', announceYes);
-  yesBtn.addEventListener('click', announceYes);
-
-  // small safety: reset No buttons when clicking elsewhere
-  document.addEventListener('click', () => { settleNo(panelNo); settleNo(noBtn); });
-
-  // End of script
+  panelNo.addEventListener('mouseenter', ()=>announce('No button ran away'));
+  noBtn.addEventListener('mouseenter', ()=>announce('No button ran away'));
   </script>
 </body>
 </html>
